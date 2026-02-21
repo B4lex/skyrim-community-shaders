@@ -26,6 +26,7 @@
 #include "Features/TerrainHelper.h"
 #include "Features/TerrainShadows.h"
 #include "Features/TerrainVariation.h"
+#include "Features/Tubus.h"
 #include "Features/UnifiedWater.h"
 #include "Features/Upscaling.h"
 #include "Features/VR.h"
@@ -235,7 +236,8 @@ const std::vector<Feature*>& Feature::GetFeatureList()
 		&globals::features::renderDoc,
 		&globals::features::weatherEditor,
 		&globals::features::linearLighting,
-		&globals::features::unifiedWater
+		&globals::features::unifiedWater,
+		&globals::features::tubus,
 	};
 
 	if (REL::Module::IsVR()) {

@@ -25,6 +25,7 @@
 #include "Features/TerrainHelper.h"
 #include "Features/TerrainShadows.h"
 #include "Features/TerrainVariation.h"
+#include "Features/Tubus.h"
 #include "Features/UnifiedWater.h"
 #include "Features/Upscaling.h"
 #include "Features/VR.h"
@@ -82,6 +83,7 @@ namespace globals
 		Upscaling upscaling{};
 		RenderDoc renderDoc{};
 		WeatherEditor weatherEditor{};
+		Tubus tubus{};
 
 		namespace llf
 		{

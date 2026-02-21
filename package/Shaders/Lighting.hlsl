@@ -940,10 +940,19 @@ float GetSnowParameterY(float texProjTmp, float alpha)
 
 #	include "Common/LightingEval.hlsli"
 
+#	if defined(TUBUS)
+#		define TUBUS_PER_GEOMETRY_REGISTER b13
+#		include "Tubus/Tubus.hlsli"
+#	endif
+
 PS_OUTPUT main(PS_INPUT input, bool frontFace : SV_IsFrontFace)
 {
 	PS_OUTPUT psout;
 	uint eyeIndex = Stereo::GetEyeIndexPS(input.Position, VPOSOffset);
+
+#	if defined(TUBUS)
+	Tubus::OcclusionDiscard(input.Position, eyeIndex);
+#	endif
 
 	float3 viewPosition = mul(FrameBuffer::CameraView[eyeIndex], float4(input.WorldPosition.xyz, 1)).xyz;
 	float3 viewDirection = -normalize(input.WorldPosition.xyz);

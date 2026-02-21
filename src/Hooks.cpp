@@ -13,6 +13,7 @@
 #include "Features/InteriorSun.h"
 #include "Features/LightLimitFix.h"
 #include "Features/TerrainHelper.h"
+#include "Features/Tubus.h"
 #include "Features/Upscaling.h"
 #include "Features/VR.h"
 #include "Features/VolumetricLighting.h"
@@ -190,6 +191,7 @@ namespace LightingExtensions
 	{
 		static void thunk(RE::BSShader* shader, RE::BSRenderPass* pass, uint32_t renderFlags)
 		{
+			globals::features::tubus.BSLightingShader_SetupGeometry(pass);
 			func(shader, pass, renderFlags);
 
 			auto state = globals::state;
@@ -241,6 +243,19 @@ namespace GrassExtensions
 					state->permutationData.ExtraShaderDescriptor |= static_cast<uint32_t>(State::ExtraShaderDescriptors::GrassSphereNormal);
 				}
 			}
+		}
+		static inline REL::Relocation<decltype(thunk)> func;
+	};
+}
+
+namespace UtilityExtensions
+{
+	struct BSUtilityShader_SetupGeometry
+	{
+		static void thunk(RE::BSShader* shader, RE::BSRenderPass* pass, uint32_t renderFlags)
+		{
+			globals::features::tubus.BSUtilityShader_SetupGeometry(pass);
+			func(shader, pass, renderFlags);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
 	};
@@ -909,6 +924,7 @@ namespace Hooks
 		stl::write_vfunc<0x6, LightingExtensions::BSLightingShader_SetupGeometry>(RE::VTABLE_BSLightingShader[0]);
 		stl::write_thunk_call<GrassExtensions::BSGrassShaderProperty_ctor>(REL::RelocationID(15214, 15383).address() + REL::Relocate(0x45B, 0x4F5));
 		stl::write_vfunc<0x6, GrassExtensions::BSGrassShader_SetupGeometry>(RE::VTABLE_BSGrassShader[0]);
+		stl::write_vfunc<0x6, UtilityExtensions::BSUtilityShader_SetupGeometry>(RE::VTABLE_BSUtilityShader[0]);
 
 		logger::info("Hooking TESObjectLAND");
 		stl::detour_thunk<TESObjectLAND_SetupMaterial>(REL::RelocationID(18368, 18791));

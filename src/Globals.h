@@ -31,6 +31,7 @@ struct WetnessEffects;
 struct ExtendedTranslucency;
 struct Upscaling;
 struct WeatherEditor;
+struct Tubus;
 
 class State;
 class Deferred;
@@ -87,6 +88,7 @@ namespace globals
 		extern Upscaling upscaling;
 		extern RenderDoc renderDoc;
 		extern WeatherEditor weatherEditor;
+		extern Tubus tubus;
 
 		namespace llf
 		{
