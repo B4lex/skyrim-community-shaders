@@ -17,7 +17,7 @@
 
 #pragma once
 
-struct Tubus : Feature
+struct Tubus : public Feature
 {
 	////////////////////////////////////////////////// Boilerplate
 	// Metadata

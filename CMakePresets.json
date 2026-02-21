@@ -84,6 +84,13 @@
             "configuration": "Release",
             "targets": ["CommunityShaders", "Package-AIO-Manual"]
         },
+                {
+            "name": "Package-Core",
+            "description": "Build preset to generate a AIO zip package in <SRC>/dist folder, mostly for CI",
+            "configurePreset": "ALL",
+            "configuration": "Release",
+            "targets": ["CommunityShaders", "Package-Core"]
+        },
         {
             "name": "Shaders",
             "description": "Build preset to copy shaders into <BUILD>/AIO folder for shader validation",
