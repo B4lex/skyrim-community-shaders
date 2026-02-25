@@ -502,6 +502,10 @@ float GetPoissonDiskFilteredShadowVisibility(float noise, float2x2 rotationMatri
 }
 #	endif
 
+#	if defined(TUBUS)
+#		include "Tubus/Tubus.hlsli"
+#	endif
+
 PS_OUTPUT main(PS_INPUT input)
 {
 	PS_OUTPUT psout;
@@ -511,6 +515,11 @@ PS_OUTPUT main(PS_INPUT input)
 #	else
 	uint eyeIndex = input.EyeIndex;
 #	endif  // !VR
+
+#	if defined(TUBUS)
+	Tubus::OcclusionDiscard(input.PositionCS, eyeIndex);
+#	endif
+
 #	if defined(ADDITIONAL_ALPHA_MASK)
 	uint2 alphaMask = input.PositionCS.xy;
 	alphaMask.x = ((alphaMask.x << 2) & 12);

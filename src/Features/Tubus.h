@@ -1,20 +1,3 @@
-
-/*
-* This file defines a new feature template for Community Shader.
-* Copy the .h and .cpp files to src/Features and rename them to your feature's name.
-* Replace all Tubus occurances in both files as well, and change the metadata accordingly.
-* Don't forget to add the feature singleton to src/Feature.cpp, Globals.h & Globals.cpp
-* and copy and rename the "New Feature" folder and contents to features/ so it gets registered.
-*
-* The naming and coding style are adapted to my personal practice,
-* but we don't really have a strict, solidified guideline on that.
-* So take your liberties within reason.
-*
-* Cheers,
-* ProfJack
-* 2025-06-28
-*/
-
 #pragma once
 
 struct Tubus : public Feature
@@ -28,19 +11,18 @@ struct Tubus : public Feature
 	virtual inline std::pair<std::string, std::vector<std::string>> GetFeatureSummary() override
 	{
 		return {
-			"TUBUS - Tactical Unit for Bathroom Urge Suppression.",
+			"Camera-to-character occlusion reveal shader.",
 			{
-				"This is a subfeature.",
-				"This is another subfeature.",
-				"Cheese.",
+				"Discards occluding meshes between camera and player.",
+				"Configurable screen-space radius and falloff.",
 			}
 		};
 	}
 
 	// Functionality
 	virtual bool inline SupportsVR() override { return true; }
-	virtual inline std::string_view GetShaderDefineName() override { return "SHADER_MACRO"; }
-	virtual inline bool HasShaderDefine(RE::BSShader::Type t) override { return t == RE::BSShader::Type::Lighting; };
+	virtual inline std::string_view GetShaderDefineName() override { return "TUBUS"; }
+	virtual inline bool HasShaderDefine(RE::BSShader::Type t) override { return t == RE::BSShader::Type::Utility; };
 
 	// Settings & UI
 	virtual void RestoreDefaultSettings() override;
@@ -50,30 +32,23 @@ struct Tubus : public Feature
 
 	// Resources
 	virtual void SetupResources() override;
-	virtual void ClearShaderCache() override;
-	void CompileShaders();
 
 	////////////////////////////////////////////////// Feature Specific Data
 	struct Settings
 	{
-		float3 ColorA = { 0.3f, 0.5f, 0.7f };
-		std::array<uint, 2> IdA = { 1, 2 };  // std::array is because we haven't defined XMUINT2 serialization yet
-		float2 UvA = { 0.0f, 0.0f };
+		float Radius = 0.15f;
+		float Falloff = 0.05f;
 	} settings;
 
-	struct CbData
+	struct CommonBufferData
 	{
-		float3 ColorA;
-		float _pad0;  // Padding to align to 16 bytes
-		DirectX::XMUINT2 IdA;
-		float2 UvA;
+		float3 PlayerWorldPosition;
+		float Radius;
+		float Falloff;
+		float3 _pad;
 	};
-	static_assert(sizeof(CbData) % 16 == 0,
-		"CbData must be aligned to 16 bytes. "
-		"Check out maraneshi.github.io/HLSL-ConstantBufferLayoutVisualizer/ if you're unsure.");
+	static_assert(sizeof(CommonBufferData) % 16 == 0,
+		"CommonBufferData must be aligned to 16 bytes.");
 
-	eastl::unique_ptr<ConstantBuffer> cheeseCb = nullptr;  // Omit this if you want to put your CB in src/FeatureBuffer.cpp
-	eastl::unique_ptr<Texture2D> cheeseTex = nullptr;
-	winrt::com_ptr<ID3D11SamplerState> cheeseSampler = nullptr;
-	winrt::com_ptr<ID3D11ComputeShader> cheeseCs = nullptr;
+	CommonBufferData GetCommonBufferData();
 };

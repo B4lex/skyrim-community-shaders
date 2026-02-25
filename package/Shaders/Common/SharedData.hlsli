@@ -238,6 +238,14 @@ namespace SharedData
 		uint3 _padding;
 	};
 
+	struct TubusSettings
+	{
+		float3 PlayerWorldPosition;
+		float Radius;
+		float Falloff;
+		float3 _pad;
+	};
+
 	cbuffer FeatureData : register(b6)
 	{
 		GrassLightingSettings grassLightingSettings;
@@ -255,6 +263,7 @@ namespace SharedData
 		ExtendedTranslucencySettings extendedTranslucencySettings;
 		LinearLightingSettings linearLightingSettings;
 		TerrainBlendingSettings terrainBlendingSettings;
+		TubusSettings tubusSettings;
 	};
 
 	Texture2D<float4> DepthTexture : register(t17);
