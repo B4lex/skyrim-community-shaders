@@ -342,7 +342,7 @@ struct PS_OUTPUT
 	float4 Specular : SV_Target4;
 	float4 Reflectance : SV_Target5;
 	float4 Masks : SV_Target6;
-#	if defined(SNOW)
+#	if defined(SNOW) || defined(CHARACTER_OUTLINE)
 	float4 Parameters : SV_Target7;
 #	endif
 };
@@ -945,10 +945,18 @@ float GetSnowParameterY(float texProjTmp, float alpha)
 #		include "Tubus/Tubus.hlsli"
 #	endif
 
+#	if defined(CHARACTER_OUTLINE)
+#		include "CharacterOutline/CharacterOutline.hlsli"
+#	endif
+
 PS_OUTPUT main(PS_INPUT input, bool frontFace : SV_IsFrontFace)
 {
 	PS_OUTPUT psout;
 	uint eyeIndex = Stereo::GetEyeIndexPS(input.Position, VPOSOffset);
+
+#	if defined(DEFERRED) && defined(CHARACTER_OUTLINE)
+	psout.Parameters = 0;
+#	endif
 
 #	if defined(TUBUS)
 	Tubus::OcclusionDiscard(input.Position, eyeIndex);
@@ -3214,6 +3222,10 @@ PS_OUTPUT main(PS_INPUT input, bool frontFace : SV_IsFrontFace)
 	if ((!inWorld && !inReflection) && SharedData::linearLightingSettings.enableLinearLighting && !(Permutation::PixelShaderDescriptor & Permutation::LightingFlags::DefShadow)) {
 		psout.Diffuse.xyz = Color::TrueLinearToGamma(psout.Diffuse.xyz);
 	}
+
+#	if defined(DEFERRED) && defined(CHARACTER_OUTLINE)
+	psout.Parameters.z = CharacterOutline::GetPlayerMask();
+#	endif
 
 	return psout;
 }

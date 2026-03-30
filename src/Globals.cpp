@@ -26,6 +26,7 @@
 #include "Features/TerrainShadows.h"
 #include "Features/TerrainVariation.h"
 #include "Features/Tubus.h"
+#include "Features/CharacterOutline.h"
 #include "Features/UnifiedWater.h"
 #include "Features/Upscaling.h"
 #include "Features/VR.h"
@@ -84,6 +85,7 @@ namespace globals
 		RenderDoc renderDoc{};
 		WeatherEditor weatherEditor{};
 		Tubus tubus{};
+		CharacterOutline characterOutline{};
 
 		namespace llf
 		{

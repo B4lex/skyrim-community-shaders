@@ -14,6 +14,7 @@
 #include "Features/LightLimitFix.h"
 #include "Features/TerrainHelper.h"
 #include "Features/Tubus.h"
+#include "Features/CharacterOutline.h"
 #include "Features/Upscaling.h"
 #include "Features/VR.h"
 #include "Features/VolumetricLighting.h"
@@ -197,11 +198,21 @@ namespace LightingExtensions
 			auto state = globals::state;
 
 			state->permutationData.ExtraShaderDescriptor &= ~static_cast<uint32_t>(State::ExtraShaderDescriptors::IsTree);
+			state->permutationData.ExtraShaderDescriptor &= ~static_cast<uint32_t>(State::ExtraShaderDescriptors::IsPlayerCharacter);
+			state->permutationData.ExtraShaderDescriptor &= ~static_cast<uint32_t>(State::ExtraShaderDescriptors::IsNPC);
 
-			if (auto userData = pass->geometry->GetUserData())
+			if (auto userData = pass->geometry->GetUserData()) {
 				if (auto baseObject = userData->GetBaseObject())
 					if (baseObject->As<RE::TESObjectTREE>())
 						state->permutationData.ExtraShaderDescriptor |= static_cast<uint32_t>(State::ExtraShaderDescriptors::IsTree);
+
+				if (globals::features::characterOutline.loaded) {
+					if (userData == RE::PlayerCharacter::GetSingleton())
+						state->permutationData.ExtraShaderDescriptor |= static_cast<uint32_t>(State::ExtraShaderDescriptors::IsPlayerCharacter);
+					else if (globals::features::characterOutline.settings.OutlineNPCs && userData->As<RE::Actor>())
+						state->permutationData.ExtraShaderDescriptor |= static_cast<uint32_t>(State::ExtraShaderDescriptors::IsNPC);
+				}
+			}
 		}
 		static inline REL::Relocation<decltype(thunk)> func;
 	};

@@ -32,6 +32,7 @@ struct ExtendedTranslucency;
 struct Upscaling;
 struct WeatherEditor;
 struct Tubus;
+struct CharacterOutline;
 
 class State;
 class Deferred;
@@ -89,6 +90,7 @@ namespace globals
 		extern RenderDoc renderDoc;
 		extern WeatherEditor weatherEditor;
 		extern Tubus tubus;
+		extern CharacterOutline characterOutline;
 
 		namespace llf
 		{

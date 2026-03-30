@@ -14,6 +14,7 @@
 #include "Features/TerrainBlending.h"
 #include "Features/Upscaling.h"
 #include "Features/WeatherEditor.h"
+#include "Features/CharacterOutline.h"
 
 #include "Hooks.h"
 
@@ -108,6 +109,8 @@ void Deferred::SetupResources()
 		SetupRenderTarget(NORMALROUGHNESS, texDesc, srvDesc, rtvDesc, uavDesc, DXGI_FORMAT_R10G10B10A2_UNORM, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
 		// Masks
 		SetupRenderTarget(MASKS, texDesc, srvDesc, rtvDesc, uavDesc, DXGI_FORMAT_R11G11B10_FLOAT, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
+		// Player Mask (for Character Outline - SV_Target7)
+		SetupRenderTarget(MASKS2, texDesc, srvDesc, rtvDesc, uavDesc, DXGI_FORMAT_R8G8B8A8_UNORM, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
 	}
 
 	{
@@ -315,7 +318,7 @@ void Deferred::StartDeferred()
 		SPECULAR,
 		REFLECTANCE,
 		MASKS,
-		RE::RENDER_TARGET::kNONE
+		MASKS2
 	};
 
 	for (uint i = 2; i < 8; i++) {
@@ -447,7 +450,7 @@ void Deferred::DeferredPasses()
 		context->Dispatch(dispatchCount.x, dispatchCount.y, 1);
 	}
 
-	// Clear
+	// Clear composite bindings
 	{
 		ID3D11ShaderResourceView* views[16]{ nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 		context->CSSetShaderResources(0, ARRAYSIZE(views), views);
@@ -459,6 +462,13 @@ void Deferred::DeferredPasses()
 		context->CSSetConstantBuffers(12, 1, buffers);
 
 		context->CSSetShader(nullptr, nullptr, 0);
+	}
+
+	// Character Outline
+	{
+		auto& characterOutline = globals::features::characterOutline;
+		if (characterOutline.loaded)
+			characterOutline.DrawOutline();
 	}
 
 	if (dynamicCubemaps.loaded)

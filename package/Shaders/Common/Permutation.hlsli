@@ -62,6 +62,8 @@ namespace Permutation
 		static const uint EffectShadows = (1 << 3);
 		static const uint IsTree = (1 << 4);
 		static const uint GrassSphereNormal = (1 << 5);
+		static const uint IsPlayerCharacter = (1 << 6);
+		static const uint IsNPC = (1 << 7);
 	}
 
 	namespace ExtraFeatureFlags
