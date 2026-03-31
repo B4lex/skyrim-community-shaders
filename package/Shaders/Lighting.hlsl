@@ -342,7 +342,7 @@ struct PS_OUTPUT
 	float4 Specular : SV_Target4;
 	float4 Reflectance : SV_Target5;
 	float4 Masks : SV_Target6;
-#	if defined(SNOW) || defined(CHARACTER_OUTLINE)
+#	if defined(SNOW)
 	float4 Parameters : SV_Target7;
 #	endif
 };
@@ -954,7 +954,7 @@ PS_OUTPUT main(PS_INPUT input, bool frontFace : SV_IsFrontFace)
 	PS_OUTPUT psout;
 	uint eyeIndex = Stereo::GetEyeIndexPS(input.Position, VPOSOffset);
 
-#	if defined(DEFERRED) && defined(CHARACTER_OUTLINE)
+#	if defined(DEFERRED) && defined(SNOW)
 	psout.Parameters = 0;
 #	endif
 
@@ -3224,7 +3224,7 @@ PS_OUTPUT main(PS_INPUT input, bool frontFace : SV_IsFrontFace)
 	}
 
 #	if defined(DEFERRED) && defined(CHARACTER_OUTLINE)
-	psout.Parameters.z = CharacterOutline::GetPlayerMask();
+	CharacterOutline::WritePlayerMask((uint2)input.Position.xy);
 #	endif
 
 	return psout;

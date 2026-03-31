@@ -5,6 +5,11 @@ struct CharacterOutline : Feature
 	ConstantBuffer* outlineSettingsCB = nullptr;
 	ID3D11ComputeShader* outlineCS = nullptr;
 
+	// Dedicated character mask texture written via PS UAV (register u8), read by the outline CS
+	ID3D11Texture2D* characterMaskTex = nullptr;
+	ID3D11ShaderResourceView* characterMaskSRV = nullptr;
+	ID3D11UnorderedAccessView* characterMaskUAV = nullptr;
+
 	////////////////////////////////////////////////// Boilerplate
 	// Metadata
 	std::string GetName() override { return "Character Outline"; }

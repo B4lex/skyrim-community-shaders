@@ -333,6 +333,13 @@ void Deferred::StartDeferred()
 	{
 		auto context = globals::d3d::context;
 
+		// Clear the dedicated character outline mask UAV for this frame before geometry renders
+		auto& characterOutline = globals::features::characterOutline;
+		if (characterOutline.loaded && characterOutline.characterMaskUAV) {
+			const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+			context->ClearUnorderedAccessViewFloat(characterOutline.characterMaskUAV, clearColor);
+		}
+
 		ID3D11Buffer* buffers[1] = { *globals::game::perFrame.get() };
 
 		ID3D11Buffer* vrBuffer = nullptr;

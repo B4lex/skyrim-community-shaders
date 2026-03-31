@@ -17,7 +17,7 @@ cbuffer OutlineSettings : register(b1)
 	if (any(dtid.xy >= dims))
 		return;
 
-	float centerMask = PlayerMaskTexture[dtid.xy].b;
+	float centerMask = PlayerMaskTexture[dtid.xy].r;
 
 	// Skip pixels that are part of the player character (outline is drawn outside)
 	if (centerMask > 0.5)
@@ -44,7 +44,7 @@ cbuffer OutlineSettings : register(b1)
 			if (any(coord < 0) || any(coord >= (int2)dims))
 				continue;
 
-			if (PlayerMaskTexture[coord].b > 0.5)
+			if (PlayerMaskTexture[coord].r > 0.5)
 				foundPlayer = true;
 		}
 	}

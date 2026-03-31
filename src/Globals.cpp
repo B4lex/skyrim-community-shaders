@@ -266,13 +266,58 @@ namespace globals
 	};
 
 	/**
- * @brief Installs hooks on the Map and Unmap methods of the provided D3D11 device context.
+ * @brief Hooked implementation of ID3D11DeviceContext::OMSetRenderTargets (vtable slot 33).
  *
- * This enables interception of resource mapping and unmapping operations for frame buffer caching.
+ * During the deferred geometry pass, intercepts every OMSetRenderTargets call and replaces it
+ * with OMSetRenderTargetsAndUnorderedAccessViews, attaching the CharacterOutline dedicated
+ * mask UAV at PS UAV slot 8 (after the 8 deferred MRTs). This gives CHARACTER_OUTLINE its own
+ * exclusive SV_Target with no overlap with the SNOW Parameters target (SV_Target7 / MASKS2).
+ *
+ * When NumViews == 0 (end-of-pass unbind), the UAV is also explicitly cleared to avoid
+ * resource hazard warnings before DrawOutline() binds the texture as an SRV.
+ */
+	struct ID3D11DeviceContext_OMSetRenderTargets
+	{
+		static void thunk(
+			ID3D11DeviceContext* This,
+			UINT NumViews,
+			ID3D11RenderTargetView* const* ppRenderTargetViews,
+			ID3D11DepthStencilView* pDepthStencilView)
+		{
+			auto& characterOutline = globals::features::characterOutline;
+			if (characterOutline.loaded && globals::deferred->deferredPass) {
+				if (NumViews > 0) {
+					// Add character mask UAV at slot 8 alongside the deferred MRTs
+					ID3D11UnorderedAccessView* uavs[1] = { characterOutline.characterMaskUAV };
+					const UINT initialCount = static_cast<UINT>(-1);  // preserve existing UAV counter
+					This->OMSetRenderTargetsAndUnorderedAccessViews(
+						NumViews, ppRenderTargetViews, pDepthStencilView,
+						8, 1, uavs, &initialCount);
+				} else {
+					// End-of-pass unbind — also release the character mask UAV
+					ID3D11UnorderedAccessView* nullUAV[1] = { nullptr };
+					const UINT zeroCount = 0;
+					This->OMSetRenderTargetsAndUnorderedAccessViews(
+						0, nullptr, pDepthStencilView,
+						8, 1, nullUAV, &zeroCount);
+				}
+				return;
+			}
+			func(This, NumViews, ppRenderTargetViews, pDepthStencilView);
+		}
+		static inline REL::Relocation<decltype(thunk)> func;
+	};
+
+	/**
+ * @brief Installs hooks on the Map, Unmap, and OMSetRenderTargets methods of the provided D3D11 device context.
+ *
+ * This enables interception of resource mapping/unmapping operations for frame buffer caching,
+ * and render target setup for the CharacterOutline dedicated mask UAV.
  */
 	void InstallD3DHooks(ID3D11DeviceContext* a_context)
 	{
 		stl::detour_vfunc<14, ID3D11DeviceContext_Map>(a_context);
 		stl::detour_vfunc<15, ID3D11DeviceContext_Unmap>(a_context);
+		stl::detour_vfunc<33, ID3D11DeviceContext_OMSetRenderTargets>(a_context);
 	}
 }

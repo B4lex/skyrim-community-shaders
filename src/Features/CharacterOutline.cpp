@@ -44,6 +44,33 @@ void CharacterOutline::DrawSettings()
 void CharacterOutline::SetupResources()
 {
 	outlineSettingsCB = new ConstantBuffer(ConstantBufferDesc<OutlineCBData>());
+
+	auto renderer = globals::game::renderer;
+	auto device = globals::d3d::device;
+
+	auto& main = renderer->GetRuntimeData().renderTargets[RE::RENDER_TARGETS::kMAIN];
+
+	D3D11_TEXTURE2D_DESC texDesc{};
+	main.texture->GetDesc(&texDesc);
+	texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+	texDesc.MipLevels = 1;
+	texDesc.MiscFlags = 0;
+	DX::ThrowIfFailed(device->CreateTexture2D(&texDesc, nullptr, &characterMaskTex));
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {
+		.Format = texDesc.Format,
+		.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D,
+		.Texture2D = { .MostDetailedMip = 0, .MipLevels = 1 }
+	};
+	DX::ThrowIfFailed(device->CreateShaderResourceView(characterMaskTex, &srvDesc, &characterMaskSRV));
+
+	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = {
+		.Format = texDesc.Format,
+		.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D,
+		.Texture2D = { .MipSlice = 0 }
+	};
+	DX::ThrowIfFailed(device->CreateUnorderedAccessView(characterMaskTex, &uavDesc, &characterMaskUAV));
 }
 
 void CharacterOutline::ClearShaderCache()
@@ -74,7 +101,6 @@ void CharacterOutline::DrawOutline()
 	auto deferred = globals::deferred;
 
 	auto main = renderer->GetRuntimeData().renderTargets[deferred->forwardRenderTargets[0]];
-	auto playerMask = renderer->GetRuntimeData().renderTargets[MASKS2];
 
 	// Update outline settings constant buffer
 	OutlineCBData cbData = {};
@@ -86,8 +112,8 @@ void CharacterOutline::DrawOutline()
 	ID3D11ShaderResourceView* nullSRVs[16] = {};
 	context->CSSetShaderResources(0, 16, nullSRVs);
 
-	// Bind player mask as input SRV
-	ID3D11ShaderResourceView* srvs[1]{ playerMask.SRV };
+	// Bind dedicated character mask as input SRV
+	ID3D11ShaderResourceView* srvs[1]{ characterMaskSRV };
 	context->CSSetShaderResources(0, 1, srvs);
 
 	// Bind main render target as UAV for read/write
