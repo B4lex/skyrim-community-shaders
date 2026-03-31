@@ -4,6 +4,7 @@ namespace TubusAPI
 {
 	struct alignas(16) PerGeometryData
 	{
+		RE::NiColorA OutlineColor;
 		bool EnableCulling = false;
 		char pad0[3] = {};
 		bool ForceEnableCulling = false;
@@ -13,12 +14,13 @@ namespace TubusAPI
 	struct ObjectOutlineConfig
 	{
 		RE::NiColorA Color;
+		explicit ObjectOutlineConfig(RE::NiColorA color) noexcept;
 	};
 
 	struct ObjectOutline : ObjectOutlineConfig
 	{
 		RE::TESObjectREFR* Object;
-		ObjectOutline(RE::TESObjectREFR*, RE::NiColorA) noexcept;
+		ObjectOutline(RE::TESObjectREFR*, const RE::NiColorA&) noexcept;
 	};
 
 	static_assert(sizeof(PerGeometryData) % 16 == 0, "PerGeometryData must be aligned to 16 bytes.");

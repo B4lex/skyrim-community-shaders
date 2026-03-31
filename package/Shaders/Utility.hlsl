@@ -502,9 +502,10 @@ float GetPoissonDiskFilteredShadowVisibility(float noise, float2x2 rotationMatri
 }
 #	endif
 
-#	if defined(TUBUS)
-#		define TUBUS_PER_GEOMETRY_REGISTER b3
-#		include "Tubus/Tubus.hlsli"
+#	if defined(SKYRIM_ARPG)
+#		define SKYRIM_ARPG_PER_GEOMETRY_REGISTER b3
+#		include "SkyrimARPG/PerGeometryBuffer.hlsli"
+#		include "SkyrimARPG/Tubus.hlsli"
 #	endif
 
 PS_OUTPUT main(PS_INPUT input)
@@ -517,7 +518,7 @@ PS_OUTPUT main(PS_INPUT input)
 	uint eyeIndex = input.EyeIndex;
 #	endif  // !VR
 
-#	if defined(TUBUS)
+#	if defined(SKYRIM_ARPG)
 	Tubus::OcclusionDiscard(input.PositionCS, eyeIndex);
 #	endif
 

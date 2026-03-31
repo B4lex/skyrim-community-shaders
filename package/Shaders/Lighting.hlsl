@@ -940,13 +940,11 @@ float GetSnowParameterY(float texProjTmp, float alpha)
 
 #	include "Common/LightingEval.hlsli"
 
-#	if defined(TUBUS)
-#		define TUBUS_PER_GEOMETRY_REGISTER b13
-#		include "Tubus/Tubus.hlsli"
-#	endif
-
-#	if defined(CHARACTER_OUTLINE)
-#		include "CharacterOutline/CharacterOutline.hlsli"
+#	if defined(SKYRIM_ARPG)
+#		define SKYRIM_ARPG_PER_GEOMETRY_REGISTER b13
+#		include "SkyrimARPG/PerGeometryBuffer.hlsli"
+#		include "SkyrimARPG/Tubus.hlsli"
+#		include "SkyrimARPG/CharacterOutline.hlsli"
 #	endif
 
 PS_OUTPUT main(PS_INPUT input, bool frontFace : SV_IsFrontFace)
@@ -958,7 +956,7 @@ PS_OUTPUT main(PS_INPUT input, bool frontFace : SV_IsFrontFace)
 	psout.Parameters = 0;
 #	endif
 
-#	if defined(TUBUS)
+#	if defined(SKYRIM_ARPG)
 	Tubus::OcclusionDiscard(input.Position, eyeIndex);
 #	endif
 
@@ -3223,8 +3221,8 @@ PS_OUTPUT main(PS_INPUT input, bool frontFace : SV_IsFrontFace)
 		psout.Diffuse.xyz = Color::TrueLinearToGamma(psout.Diffuse.xyz);
 	}
 
-#	if defined(DEFERRED) && defined(CHARACTER_OUTLINE)
-	CharacterOutline::WritePlayerMask((uint2)input.Position.xy);
+#	if defined(DEFERRED) && defined(SKYRIM_ARPG)
+	CharacterOutline::WritePlayerMask((uint2)input.Position.xy, OutlineColor);
 #	endif
 
 	return psout;

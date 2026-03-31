@@ -5,7 +5,7 @@
 #include "State.h"
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(SkyrimARPG::TubusSettings, Radius, EdgeWidth, TransitionSpeed)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(SkyrimARPG::OutlineSettings, OutlineColorR, OutlineColorG, OutlineColorB, OutlineOpacity, Thickness, OutlineNPCs)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(SkyrimARPG::OutlineSettings, OutlineOpacity, Thickness)
 
 void SkyrimARPG::RestoreDefaultSettings()
 {
@@ -44,15 +44,6 @@ void SkyrimARPG::DrawSettings()
 
 	ImGui::SeparatorText("Character Outline");
 
-	float color[3] = { outlineSettings.OutlineColorR, outlineSettings.OutlineColorG, outlineSettings.OutlineColorB };
-	if (ImGui::ColorEdit3("Outline Color", color)) {
-		outlineSettings.OutlineColorR = color[0];
-		outlineSettings.OutlineColorG = color[1];
-		outlineSettings.OutlineColorB = color[2];
-	}
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("Color of the outline around the player character.");
-
 	ImGui::SliderFloat("Outline Opacity", &outlineSettings.OutlineOpacity, 0.0f, 1.0f, "%.2f");
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip("Opacity of the outline effect. 0 = fully transparent, 1 = fully opaque.");
@@ -64,9 +55,6 @@ void SkyrimARPG::DrawSettings()
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip("Width of the outline in pixels.");
 
-	ImGui::Checkbox("Outline NPCs", &outlineSettings.OutlineNPCs);
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("Also draw outlines around all NPCs.");
 }
 
 void SkyrimARPG::SetupResources()
@@ -184,7 +172,7 @@ ID3D11ComputeShader* SkyrimARPG::GetComputeOutline()
 	if (!outlineCS) {
 		logger::debug("Compiling SkyrimARPG OutlineCompositeCS");
 		outlineCS = static_cast<ID3D11ComputeShader*>(
-			Util::CompileShader(L"Data\\Shaders\\CharacterOutline\\OutlineCompositeCS.hlsl", {}, "cs_5_0"));
+			Util::CompileShader(L"Data\\Shaders\\SkyrimARPG\\OutlineCompositeCS.hlsl", {}, "cs_5_0"));
 	}
 	return outlineCS;
 }
@@ -202,7 +190,6 @@ void SkyrimARPG::DrawOutline()
 
 	// Update outline settings constant buffer
 	OutlineCBData cbData = {};
-	cbData.OutlineColor = { outlineSettings.OutlineColorR, outlineSettings.OutlineColorG, outlineSettings.OutlineColorB, outlineSettings.OutlineOpacity };
 	cbData.Thickness = static_cast<float>(outlineSettings.Thickness);
 	outlineSettingsCB->Update(cbData);
 

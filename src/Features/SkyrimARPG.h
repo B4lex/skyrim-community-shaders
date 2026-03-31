@@ -39,8 +39,7 @@ struct SkyrimARPG : Feature
 
 	// Functionality
 	bool SupportsVR() override { return true; }
-	std::string_view GetShaderDefineName() override { return "TUBUS"; }
-	std::vector<std::string_view> GetAllShaderDefineNames() override { return { "TUBUS", "CHARACTER_OUTLINE" }; }
+	std::string_view GetShaderDefineName() override { return "SKYRIM_ARPG"; }
 	bool HasShaderDefine(RE::BSShader::Type t) override
 	{
 		return t == RE::BSShader::Type::Utility || t == RE::BSShader::Type::Lighting;
@@ -80,20 +79,14 @@ struct SkyrimARPG : Feature
 	void BSUtilityShader_SetupGeometry(const RE::BSRenderPass* a_pass) const;
 	void BSLightingShader_SetupGeometry(const RE::BSRenderPass* a_pass) const;
 
-	////////////////////////////////////////////////// CharacterOutline Settings
 	struct OutlineSettings
 	{
-		float OutlineColorR = 1.0f;
-		float OutlineColorG = 1.0f;
-		float OutlineColorB = 1.0f;
 		float OutlineOpacity = 0.8f;
 		uint32_t Thickness = 2;
-		bool OutlineNPCs = true;
 	} outlineSettings;
 
 	struct alignas(16) OutlineCBData
 	{
-		float4 OutlineColor;
 		float Thickness;
 		float3 pad;
 	};

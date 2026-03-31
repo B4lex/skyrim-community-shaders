@@ -3,12 +3,6 @@
 
 namespace Tubus
 {
-	cbuffer PerGeometryTubus : register(TUBUS_PER_GEOMETRY_REGISTER)
-	{
-		bool EnableCulling : packoffset(c0.x);
-		bool ForceEnableCulling : packoffset(c0.y);
-	}
-
 	// Gradient vectors for 2D Perlin noise (unit circle directions).
 	float2 PerlinGradient(float2 cell)
 	{

@@ -5,7 +5,6 @@ RWTexture2D<float4> MainRW : register(u0);
 
 cbuffer OutlineSettings : register(b1)
 {
-	float4 OutlineColor;
 	float Thickness;
 	float3 pad;
 };
@@ -17,15 +16,14 @@ cbuffer OutlineSettings : register(b1)
 	if (any(dtid.xy >= dims))
 		return;
 
-	float centerMask = PlayerMaskTexture[dtid.xy].r;
-
 	// Skip pixels that are part of the player character (outline is drawn outside)
-	if (centerMask > 0.5)
+	if (any(PlayerMaskTexture[dtid.xy].rbg))
 		return;
 
 	int iThickness = (int)Thickness;
 	bool foundPlayer = false;
 
+	float4 outlineColor;
 	// Search neighboring pixels for player mask within thickness radius
 	[loop] for (int y = -iThickness; y <= iThickness && !foundPlayer; y++)
 	{
@@ -44,13 +42,15 @@ cbuffer OutlineSettings : register(b1)
 			if (any(coord < 0) || any(coord >= (int2)dims))
 				continue;
 
-			if (PlayerMaskTexture[coord].r > 0.5)
+			if (any(PlayerMaskTexture[coord].rgb)) {
 				foundPlayer = true;
+				outlineColor = PlayerMaskTexture[coord];
+			}
 		}
 	}
 
+
 	if (foundPlayer) {
-		float4 currentColor = MainRW[dtid.xy];
-		MainRW[dtid.xy] = float4(lerp(currentColor.rgb, OutlineColor.rgb, OutlineColor.a), currentColor.a);
+		MainRW[dtid.xy] = outlineColor;
 	}
 }
