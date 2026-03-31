@@ -31,8 +31,7 @@ struct WetnessEffects;
 struct ExtendedTranslucency;
 struct Upscaling;
 struct WeatherEditor;
-struct Tubus;
-struct CharacterOutline;
+struct SkyrimARPG;
 
 class State;
 class Deferred;
@@ -89,8 +88,7 @@ namespace globals
 		extern Upscaling upscaling;
 		extern RenderDoc renderDoc;
 		extern WeatherEditor weatherEditor;
-		extern Tubus tubus;
-		extern CharacterOutline characterOutline;
+		extern SkyrimARPG skyrimARPG;
 
 		namespace llf
 		{

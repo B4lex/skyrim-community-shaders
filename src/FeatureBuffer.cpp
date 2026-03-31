@@ -14,7 +14,7 @@
 #include "Features/TerrainBlending.h"
 #include "Features/TerrainShadows.h"
 #include "Features/TerrainVariation.h"
-#include "Features/Tubus.h"
+#include "Features/SkyrimARPG.h"
 #include "Features/WetnessEffects.h"
 
 #include "TruePBR.h"
@@ -53,5 +53,5 @@ std::pair<unsigned char*, size_t> GetFeatureBufferData(bool a_inWorld)
 		globals::features::extendedTranslucency.GetCommonBufferData(),
 		globals::features::linearLighting.GetCommonBufferData(),
 		globals::features::terrainBlending.settings,
-		globals::features::tubus.GetCommonBufferData());
+		globals::features::skyrimARPG.GetCommonBufferData());
 }

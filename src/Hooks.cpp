@@ -13,8 +13,7 @@
 #include "Features/InteriorSun.h"
 #include "Features/LightLimitFix.h"
 #include "Features/TerrainHelper.h"
-#include "Features/Tubus.h"
-#include "Features/CharacterOutline.h"
+#include "Features/SkyrimARPG.h"
 #include "Features/Upscaling.h"
 #include "Features/VR.h"
 #include "Features/VolumetricLighting.h"
@@ -192,7 +191,7 @@ namespace LightingExtensions
 	{
 		static void thunk(RE::BSShader* shader, RE::BSRenderPass* pass, uint32_t renderFlags)
 		{
-			globals::features::tubus.BSLightingShader_SetupGeometry(pass);
+			globals::features::skyrimARPG.BSLightingShader_SetupGeometry(pass);
 			func(shader, pass, renderFlags);
 
 			auto state = globals::state;
@@ -205,8 +204,8 @@ namespace LightingExtensions
 					if (baseObject->As<RE::TESObjectTREE>())
 						state->permutationData.ExtraShaderDescriptor |= static_cast<uint32_t>(State::ExtraShaderDescriptors::IsTree);
 
-				if (globals::features::characterOutline.loaded) {
-					if (globals::features::tubus.TubusLib->IsObjectOutlined(userData))
+				if (globals::features::skyrimARPG.loaded) {
+					if (globals::features::skyrimARPG.TubusLib->IsObjectOutlined(userData))
 						state->permutationData.ExtraShaderDescriptor |= static_cast<uint32_t>(State::ExtraShaderDescriptors::IsOutlined);
 				}
 			}
@@ -262,7 +261,7 @@ namespace UtilityExtensions
 	{
 		static void thunk(RE::BSShader* shader, RE::BSRenderPass* pass, uint32_t renderFlags)
 		{
-			globals::features::tubus.BSUtilityShader_SetupGeometry(pass);
+			globals::features::skyrimARPG.BSUtilityShader_SetupGeometry(pass);
 			func(shader, pass, renderFlags);
 		}
 		static inline REL::Relocation<decltype(thunk)> func;

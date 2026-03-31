@@ -4,8 +4,9 @@
 #include <RE/F/FormTypes.h>
 #include <vector>
 
-struct Tubus : Feature
+struct SkyrimARPG : Feature
 {
+	// Tubus resources
 	ConstantBuffer* UtilityPerGeometryCB = nullptr;
 	ConstantBuffer* LightingPerGeometryCB = nullptr;
 	TubusAPI::Tubus* TubusLib = nullptr;
@@ -14,25 +15,32 @@ struct Tubus : Feature
 	RE::NiPoint3 CameraPlayerCollisionPoint;
 	RE::NiPoint3 PlayerCameraCollisionPoint;
 
-	// Tubus();
+	// CharacterOutline resources
+	ConstantBuffer* outlineSettingsCB = nullptr;
+	ID3D11ComputeShader* outlineCS = nullptr;
+	ID3D11Texture2D* characterMaskTex = nullptr;
+	ID3D11ShaderResourceView* characterMaskSRV = nullptr;
+	ID3D11UnorderedAccessView* characterMaskUAV = nullptr;
+
 	////////////////////////////////////////////////// Boilerplate
 	// Metadata
-	std::string GetName() override { return "Tubus"; }
-	std::string GetShortName() override { return "Tubus"; }
+	std::string GetName() override { return "SkyrimARPG"; }
+	std::string GetShortName() override { return "SkyrimARPG"; }
 	std::string_view GetCategory() const override { return "Lighting"; }
 	std::string GetFeatureModLink() override { return MakeNexusModURL("999999"); }
 	std::pair<std::string, std::vector<std::string>> GetFeatureSummary() override
 	{
-		return { "Camera-to-character occlusion reveal shader.",
+		return { "ARPG-style character visibility effects.",
 			{
-				"Discards occluding meshes between camera and player.",
-				"World-space capsule culling between collision points.",
+				"Camera-to-character occlusion reveal shader.",
+				"Screen-space outline around characters.",
 			} };
 	}
 
 	// Functionality
 	bool SupportsVR() override { return true; }
 	std::string_view GetShaderDefineName() override { return "TUBUS"; }
+	std::vector<std::string_view> GetAllShaderDefineNames() override { return { "TUBUS", "CHARACTER_OUTLINE" }; }
 	bool HasShaderDefine(RE::BSShader::Type t) override
 	{
 		return t == RE::BSShader::Type::Utility || t == RE::BSShader::Type::Lighting;
@@ -46,14 +54,15 @@ struct Tubus : Feature
 
 	// Resources
 	void SetupResources() override;
+	void ClearShaderCache() override;
 
-	////////////////////////////////////////////////// Feature Specific Data
-	struct Settings
+	////////////////////////////////////////////////// Tubus Settings
+	struct TubusSettings
 	{
 		float Radius = 210.0f;
 		float EdgeWidth = 75.0f;
 		float TransitionSpeed = 0.6f;
-	} settings;
+	} tubusSettings;
 
 	struct CommonBufferData
 	{
@@ -70,4 +79,27 @@ struct Tubus : Feature
 	CommonBufferData GetCommonBufferData();
 	void BSUtilityShader_SetupGeometry(const RE::BSRenderPass* a_pass) const;
 	void BSLightingShader_SetupGeometry(const RE::BSRenderPass* a_pass) const;
+
+	////////////////////////////////////////////////// CharacterOutline Settings
+	struct OutlineSettings
+	{
+		float OutlineColorR = 1.0f;
+		float OutlineColorG = 1.0f;
+		float OutlineColorB = 1.0f;
+		float OutlineOpacity = 0.8f;
+		uint32_t Thickness = 2;
+		bool OutlineNPCs = true;
+	} outlineSettings;
+
+	struct alignas(16) OutlineCBData
+	{
+		float4 OutlineColor;
+		float Thickness;
+		float3 pad;
+	};
+
+	static_assert(sizeof(OutlineCBData) % 16 == 0, "OutlineCBData must be aligned to 16 bytes.");
+
+	void DrawOutline();
+	ID3D11ComputeShader* GetComputeOutline();
 };

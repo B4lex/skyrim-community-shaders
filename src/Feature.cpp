@@ -2,7 +2,7 @@
 
 #include "FeatureIssues.h"
 #include "FeatureVersions.h"
-#include "Features/CharacterOutline.h"
+#include "Features/SkyrimARPG.h"
 #include "Features/CloudShadows.h"
 #include "Features/DynamicCubemaps.h"
 #include "Features/ExtendedMaterials.h"
@@ -27,7 +27,6 @@
 #include "Features/TerrainHelper.h"
 #include "Features/TerrainShadows.h"
 #include "Features/TerrainVariation.h"
-#include "Features/Tubus.h"
 #include "Features/UnifiedWater.h"
 #include "Features/Upscaling.h"
 #include "Features/VR.h"
@@ -238,8 +237,7 @@ const std::vector<Feature*>& Feature::GetFeatureList()
 		&globals::features::weatherEditor,
 		&globals::features::linearLighting,
 		&globals::features::unifiedWater,
-		&globals::features::tubus,
-		&globals::features::characterOutline,
+		&globals::features::skyrimARPG,
 	};
 
 	if (REL::Module::IsVR()) {

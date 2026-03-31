@@ -14,7 +14,7 @@
 #include "Features/TerrainBlending.h"
 #include "Features/Upscaling.h"
 #include "Features/WeatherEditor.h"
-#include "Features/CharacterOutline.h"
+#include "Features/SkyrimARPG.h"
 
 #include "Hooks.h"
 
@@ -334,10 +334,10 @@ void Deferred::StartDeferred()
 		auto context = globals::d3d::context;
 
 		// Clear the dedicated character outline mask UAV for this frame before geometry renders
-		auto& characterOutline = globals::features::characterOutline;
-		if (characterOutline.loaded && characterOutline.characterMaskUAV) {
+		auto& skyrimARPG = globals::features::skyrimARPG;
+		if (skyrimARPG.loaded && skyrimARPG.characterMaskUAV) {
 			const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-			context->ClearUnorderedAccessViewFloat(characterOutline.characterMaskUAV, clearColor);
+			context->ClearUnorderedAccessViewFloat(skyrimARPG.characterMaskUAV, clearColor);
 		}
 
 		ID3D11Buffer* buffers[1] = { *globals::game::perFrame.get() };
@@ -473,9 +473,9 @@ void Deferred::DeferredPasses()
 
 	// Character Outline
 	{
-		auto& characterOutline = globals::features::characterOutline;
-		if (characterOutline.loaded)
-			characterOutline.DrawOutline();
+		auto& skyrimARPG = globals::features::skyrimARPG;
+		if (skyrimARPG.loaded)
+			skyrimARPG.DrawOutline();
 	}
 
 	if (dynamicCubemaps.loaded)

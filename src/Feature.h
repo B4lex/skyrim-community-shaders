@@ -29,6 +29,12 @@ struct Feature
 	virtual std::string GetShortName() = 0;
 	virtual std::string GetFeatureModLink() { return ""; }
 	virtual std::string_view GetShaderDefineName() { return ""; }
+	virtual std::vector<std::string_view> GetAllShaderDefineNames()
+	{
+		auto name = GetShaderDefineName();
+		if (name.empty()) return {};
+		return { name };
+	}
 	virtual std::vector<std::pair<std::string_view, std::string_view>> GetShaderDefineOptions() { return {}; }
 
 protected:

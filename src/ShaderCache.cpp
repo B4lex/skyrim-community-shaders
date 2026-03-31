@@ -148,7 +148,8 @@ namespace SIE
 
 			for (auto* feature : Feature::GetFeatureList()) {
 				if (feature->loaded && feature->HasShaderDefine(RE::BSShader::Type::Lighting)) {
-					defines[lastIndex++] = { feature->GetShaderDefineName().data(), nullptr };
+					for (auto def : feature->GetAllShaderDefineNames())
+						defines[lastIndex++] = { def.data(), nullptr };
 				}
 			}
 
@@ -166,7 +167,8 @@ namespace SIE
 
 			for (auto* feature : Feature::GetFeatureList()) {
 				if (feature->loaded && feature->HasShaderDefine(RE::BSShader::Type::BloodSplatter)) {
-					defines[lastIndex++] = { feature->GetShaderDefineName().data(), nullptr };
+					for (auto def : feature->GetAllShaderDefineNames())
+						defines[lastIndex++] = { def.data(), nullptr };
 				}
 			}
 
@@ -190,7 +192,8 @@ namespace SIE
 
 			for (auto* feature : Feature::GetFeatureList()) {
 				if (feature->loaded && feature->HasShaderDefine(RE::BSShader::Type::DistantTree)) {
-					defines[lastIndex++] = { feature->GetShaderDefineName().data(), nullptr };
+					for (auto def : feature->GetAllShaderDefineNames())
+						defines[lastIndex++] = { def.data(), nullptr };
 				}
 			}
 
@@ -266,7 +269,8 @@ namespace SIE
 
 			for (auto* feature : Feature::GetFeatureList()) {
 				if (feature->loaded && feature->HasShaderDefine(RE::BSShader::Type::Sky)) {
-					defines[lastIndex++] = { feature->GetShaderDefineName().data(), nullptr };
+					for (auto def : feature->GetAllShaderDefineNames())
+						defines[lastIndex++] = { def.data(), nullptr };
 				}
 			}
 
@@ -288,7 +292,8 @@ namespace SIE
 
 			for (auto* feature : Feature::GetFeatureList()) {
 				if (feature->loaded && feature->HasShaderDefine(RE::BSShader::Type::Grass)) {
-					defines[lastIndex++] = { feature->GetShaderDefineName().data(), nullptr };
+					for (auto def : feature->GetAllShaderDefineNames())
+						defines[lastIndex++] = { def.data(), nullptr };
 				}
 			}
 
@@ -334,7 +339,8 @@ namespace SIE
 
 			for (auto* feature : Feature::GetFeatureList()) {
 				if (feature->loaded && feature->HasShaderDefine(RE::BSShader::Type::Particle)) {
-					defines[lastIndex++] = { feature->GetShaderDefineName().data(), nullptr };
+					for (auto def : feature->GetAllShaderDefineNames())
+						defines[lastIndex++] = { def.data(), nullptr };
 				}
 			}
 
@@ -430,7 +436,8 @@ namespace SIE
 
 			for (auto* feature : Feature::GetFeatureList()) {
 				if (feature->loaded && feature->HasShaderDefine(RE::BSShader::Type::Effect)) {
-					defines[lastIndex++] = { feature->GetShaderDefineName().data(), nullptr };
+					for (auto def : feature->GetAllShaderDefineNames())
+						defines[lastIndex++] = { def.data(), nullptr };
 				}
 			}
 
@@ -495,7 +502,8 @@ namespace SIE
 
 			for (auto* feature : Feature::GetFeatureList()) {
 				if (feature->loaded && feature->HasShaderDefine(RE::BSShader::Type::Water)) {
-					defines[lastIndex++] = { feature->GetShaderDefineName().data(), nullptr };
+					for (auto def : feature->GetAllShaderDefineNames())
+						defines[lastIndex++] = { def.data(), nullptr };
 				}
 			}
 
@@ -646,7 +654,8 @@ namespace SIE
 
 			for (auto* feature : Feature::GetFeatureList()) {
 				if (feature->loaded && feature->HasShaderDefine(RE::BSShader::Type::Utility)) {
-					defines[lastIndex++] = { feature->GetShaderDefineName().data(), nullptr };
+					for (auto def : feature->GetAllShaderDefineNames())
+						defines[lastIndex++] = { def.data(), nullptr };
 				}
 			}
 
@@ -661,7 +670,8 @@ namespace SIE
 			size_t lastIndex = std::ranges::find_if(defines, [](const D3D_SHADER_MACRO& macro) { return macro.Name == nullptr; }) - defines.begin();
 			for (auto* feature : Feature::GetFeatureList()) {
 				if (feature->loaded && feature->HasShaderDefine(RE::BSShader::Type::ImageSpace)) {
-					defines[lastIndex++] = { feature->GetShaderDefineName().data(), nullptr };
+					for (auto def : feature->GetAllShaderDefineNames())
+						defines[lastIndex++] = { def.data(), nullptr };
 					auto options = feature->GetShaderDefineOptions();
 					if (!options.empty()) {
 						for (auto& option : options) {

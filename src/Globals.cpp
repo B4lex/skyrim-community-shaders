@@ -25,8 +25,7 @@
 #include "Features/TerrainHelper.h"
 #include "Features/TerrainShadows.h"
 #include "Features/TerrainVariation.h"
-#include "Features/Tubus.h"
-#include "Features/CharacterOutline.h"
+#include "Features/SkyrimARPG.h"
 #include "Features/UnifiedWater.h"
 #include "Features/Upscaling.h"
 #include "Features/VR.h"
@@ -84,8 +83,7 @@ namespace globals
 		Upscaling upscaling{};
 		RenderDoc renderDoc{};
 		WeatherEditor weatherEditor{};
-		Tubus tubus{};
-		CharacterOutline characterOutline{};
+		SkyrimARPG skyrimARPG{};
 
 		namespace llf
 		{
@@ -284,11 +282,11 @@ namespace globals
 			ID3D11RenderTargetView* const* ppRenderTargetViews,
 			ID3D11DepthStencilView* pDepthStencilView)
 		{
-			auto& characterOutline = globals::features::characterOutline;
-			if (characterOutline.loaded && globals::deferred->deferredPass) {
+			auto& skyrimARPG = globals::features::skyrimARPG;
+			if (skyrimARPG.loaded && globals::deferred->deferredPass) {
 				if (NumViews > 0) {
 					// Add character mask UAV at slot 8 alongside the deferred MRTs
-					ID3D11UnorderedAccessView* uavs[1] = { characterOutline.characterMaskUAV };
+					ID3D11UnorderedAccessView* uavs[1] = { skyrimARPG.characterMaskUAV };
 					const UINT initialCount = static_cast<UINT>(-1);  // preserve existing UAV counter
 					This->OMSetRenderTargetsAndUnorderedAccessViews(
 						NumViews, ppRenderTargetViews, pDepthStencilView,
