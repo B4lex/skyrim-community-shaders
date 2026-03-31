@@ -6,9 +6,8 @@ namespace CharacterOutline
 
 	void WritePlayerMask(uint2 screenPos)
 	{
-		bool isPlayer = (Permutation::ExtraShaderDescriptor & Permutation::ExtraFlags::IsPlayerCharacter) != 0;
-		bool isNPC = (Permutation::ExtraShaderDescriptor & Permutation::ExtraFlags::IsNPC) != 0;
-		if (isPlayer || isNPC)
+		bool isOutlined = (Permutation::ExtraShaderDescriptor & Permutation::ExtraFlags::IsOutlined) != 0;
+		if (isOutlined)
 			CharacterMaskUAV[screenPos] = float4(1.0, 0, 0, 0);
 	}
 }

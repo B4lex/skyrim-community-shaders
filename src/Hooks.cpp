@@ -198,8 +198,7 @@ namespace LightingExtensions
 			auto state = globals::state;
 
 			state->permutationData.ExtraShaderDescriptor &= ~static_cast<uint32_t>(State::ExtraShaderDescriptors::IsTree);
-			state->permutationData.ExtraShaderDescriptor &= ~static_cast<uint32_t>(State::ExtraShaderDescriptors::IsPlayerCharacter);
-			state->permutationData.ExtraShaderDescriptor &= ~static_cast<uint32_t>(State::ExtraShaderDescriptors::IsNPC);
+			state->permutationData.ExtraShaderDescriptor &= ~static_cast<uint32_t>(State::ExtraShaderDescriptors::IsOutlined);
 
 			if (auto userData = pass->geometry->GetUserData()) {
 				if (auto baseObject = userData->GetBaseObject())
@@ -207,10 +206,8 @@ namespace LightingExtensions
 						state->permutationData.ExtraShaderDescriptor |= static_cast<uint32_t>(State::ExtraShaderDescriptors::IsTree);
 
 				if (globals::features::characterOutline.loaded) {
-					if (userData == RE::PlayerCharacter::GetSingleton())
-						state->permutationData.ExtraShaderDescriptor |= static_cast<uint32_t>(State::ExtraShaderDescriptors::IsPlayerCharacter);
-					else if (globals::features::characterOutline.settings.OutlineNPCs && userData->As<RE::Actor>())
-						state->permutationData.ExtraShaderDescriptor |= static_cast<uint32_t>(State::ExtraShaderDescriptors::IsNPC);
+					if (globals::features::tubus.TubusLib->IsObjectOutlined(userData))
+						state->permutationData.ExtraShaderDescriptor |= static_cast<uint32_t>(State::ExtraShaderDescriptors::IsOutlined);
 				}
 			}
 		}

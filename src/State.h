@@ -157,8 +157,7 @@ public:
 		EffectShadows = 1 << 3,
 		IsTree = 1 << 4,
 		GrassSphereNormal = 1 << 5,
-		IsPlayerCharacter = 1 << 6,
-		IsNPC = 1 << 7
+		IsOutlined = 1 << 6,
 	};
 
 	enum class ExtraFeatureDescriptors : uint32_t
