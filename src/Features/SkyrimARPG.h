@@ -1,6 +1,7 @@
 #pragma once
 
-#include "API/TubusAPI.h"
+#include "API/OcclusionReveal.h"
+#include "API/RequestAPI.h"
 #include <RE/F/FormTypes.h>
 #include <vector>
 
@@ -9,7 +10,7 @@ struct SkyrimARPG : Feature
 	// Tubus resources
 	ConstantBuffer* UtilityPerGeometryCB = nullptr;
 	ConstantBuffer* LightingPerGeometryCB = nullptr;
-	TubusAPI::Tubus* TubusLib = nullptr;
+	SkyrimARPGShaderAPI::Internal* TubusLib = nullptr;
 	float TransitionProgress = 0.0f;
 	float DebounceProgress = 0.0f;
 	RE::NiPoint3 CameraPlayerCollisionPoint;
@@ -81,7 +82,7 @@ struct SkyrimARPG : Feature
 
 	struct OutlineSettings
 	{
-		float OutlineOpacity = 0.8f;
+		float OutlineOpacity = 1.f;
 		uint32_t Thickness = 2;
 	} outlineSettings;
 

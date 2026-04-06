@@ -30,6 +30,7 @@ void SkyrimARPG::SaveSettings(json& o_json)
 void SkyrimARPG::DrawSettings()
 {
 	ImGui::SeparatorText("Occlusion Reveal");
+
 	ImGui::SliderFloat("Radius", &tubusSettings.Radius, 50.0f, 300.0f, "%.1f");
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip("World-space radius of the capsule between camera and player collision points.");
@@ -42,14 +43,14 @@ void SkyrimARPG::DrawSettings()
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip("How fast the culling capsule animates in and out. Higher values = faster transition.");
 
-	ImGui::SeparatorText("Character Outline");
+	ImGui::SeparatorText("Object Outline");
 
 	ImGui::SliderFloat("Outline Opacity", &outlineSettings.OutlineOpacity, 0.0f, 1.0f, "%.2f");
 	if (ImGui::IsItemHovered())
 		ImGui::SetTooltip("Opacity of the outline effect. 0 = fully transparent, 1 = fully opaque.");
 
 	int thickness = static_cast<int>(outlineSettings.Thickness);
-	if (ImGui::SliderInt("Outline Thickness", &thickness, 1, 5)) {
+	if (ImGui::SliderInt("Outline Thickness", &thickness, 1, 10)) {
 		outlineSettings.Thickness = static_cast<uint32_t>(thickness);
 	}
 	if (ImGui::IsItemHovered())
@@ -60,8 +61,8 @@ void SkyrimARPG::DrawSettings()
 void SkyrimARPG::SetupResources()
 {
 	// Tubus constant buffers
-	UtilityPerGeometryCB = new ConstantBuffer(ConstantBufferDesc<TubusAPI::PerGeometryData>());
-	LightingPerGeometryCB = new ConstantBuffer(ConstantBufferDesc<TubusAPI::PerGeometryData>());
+	UtilityPerGeometryCB = new ConstantBuffer(ConstantBufferDesc<SkyrimARPGShaderAPI::PerGeometryData>());
+	LightingPerGeometryCB = new ConstantBuffer(ConstantBufferDesc<SkyrimARPGShaderAPI::PerGeometryData>());
 
 	// CharacterOutline resources
 	outlineSettingsCB = new ConstantBuffer(ConstantBufferDesc<OutlineCBData>());
@@ -107,7 +108,7 @@ void SkyrimARPG::ClearShaderCache()
 SkyrimARPG::CommonBufferData SkyrimARPG::GetCommonBufferData()
 {
 	CommonBufferData data = {};
-	TubusLib = static_cast<TubusAPI::Tubus*>(TubusAPI::RequestPluginAPI());
+	TubusLib = static_cast<SkyrimARPGShaderAPI::Internal*>(SkyrimARPGShaderAPI::RequestPluginAPI());
 	const bool shouldCull = TubusLib->ShouldEnableCulling();
 
 	const float dt = RE::GetSecondsSinceLastFrame();
