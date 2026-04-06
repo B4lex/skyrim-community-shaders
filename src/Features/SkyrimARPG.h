@@ -82,7 +82,6 @@ struct SkyrimARPG : Feature
 
 	struct OutlineSettings
 	{
-		float OutlineOpacity = 1.f;
 		uint32_t Thickness = 2;
 	} outlineSettings;
 

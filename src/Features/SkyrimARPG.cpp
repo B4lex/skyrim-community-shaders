@@ -5,7 +5,7 @@
 #include "State.h"
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(SkyrimARPG::TubusSettings, Radius, EdgeWidth, TransitionSpeed)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(SkyrimARPG::OutlineSettings, OutlineOpacity, Thickness)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(SkyrimARPG::OutlineSettings, Thickness)
 
 void SkyrimARPG::RestoreDefaultSettings()
 {
@@ -44,10 +44,6 @@ void SkyrimARPG::DrawSettings()
 		ImGui::SetTooltip("How fast the culling capsule animates in and out. Higher values = faster transition.");
 
 	ImGui::SeparatorText("Object Outline");
-
-	ImGui::SliderFloat("Outline Opacity", &outlineSettings.OutlineOpacity, 0.0f, 1.0f, "%.2f");
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip("Opacity of the outline effect. 0 = fully transparent, 1 = fully opaque.");
 
 	int thickness = static_cast<int>(outlineSettings.Thickness);
 	if (ImGui::SliderInt("Outline Thickness", &thickness, 1, 10)) {
