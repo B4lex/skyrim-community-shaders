@@ -55,8 +55,11 @@ namespace Tubus
 		if (radius <= 0)
 			return;
 
-		// Reconstruct world position from positionCS (SV_Position) in camera-relative space
+		// Reconstruct world position from positionCS (SV_Position) in camera-relative space.
+		// When upscaling (FSR/dynamic resolution) is active, positionCS is in render resolution
+		// but BufferDim is display resolution, so unadjust to get correct [0,1] UVs.
 		float2 pixelUV = positionCS.xy / SharedData::BufferDim.xy;
+		pixelUV = FrameBuffer::GetDynamicResolutionUnadjustedScreenPosition(pixelUV);
 		float4 positionNDC = float4(2 * float2(pixelUV.x, -pixelUV.y + 1) - 1, positionCS.z, 1);
 		float4 positionWS = mul(FrameBuffer::CameraViewProjInverse[eyeIndex], positionNDC);
 		float3 camAdj = FrameBuffer::CameraPosAdjust[eyeIndex].xyz;
